@@ -78,9 +78,10 @@ class TimeoutTimer {
     guard let timeInterval
       = self.timerCalculation.call(self.tries + 1) else { return }
     
-    let workItem = DispatchWorkItem {
-      self.tries += 1
-      self.callback.call()
+    let workItem = DispatchWorkItem { [weak self] in
+      self?.tries += 1
+      self?.callback.call()
+      self?.scheduleTimeout()
     }
     
     self.workItem = workItem
